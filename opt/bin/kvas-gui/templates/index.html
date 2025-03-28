@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление Kvas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+        h1, h3 {
+            color: #ffffff;
+        }
+        input[type="text"], button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        input[type="text"] {
+            background: #333;
+            color: #ffffff;
+            border: 1px solid #666;
+        }
+        button {
+            background: #ff4444;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #333;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            border-radius: 5px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #444;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+		<h1>Управление Kvas на роутере</h1>
+        <a href="/kvas_list_page">
+            <button>Показать kvas list</button>
+        </a>
+        
+	<div class="container">
+		<h1>Статус VPN:</h1>
+		<p id="vpn-status" style="font-size: 20px; font-weight: bold;">Загрузка...</p>
+	</div>
+
+	<script>
+	function updateVPNStatus() {
+		fetch('/vpn_status')
+		.then(response => response.json())
+		.then(data => {
+			let statusElement = document.getElementById('vpn-status');
+			statusElement.innerText = data.status;
+			statusElement.style.color = data.color;
+		})
+		.catch(error => {
+			document.getElementById('vpn-status').innerText = "Ошибка загрузки VPN статуса";
+		});
+	}
+
+	// Запускаем обновление статуса при загрузке страницы
+	updateVPNStatus();
+
+	// Можно обновлять статус каждые 10 секунд
+	setInterval(updateVPNStatus, 10000);
+	</script>
+		
+        <!-- Форма для добавления хоста -->
+        <form method="POST">
+            <div class="form-section">
+                <h3>Добавить хост</h3>
+                <input type="hidden" name="command_type" value="add">
+                <label for="host">Хост (IP или домен):</label>
+                <input type="text" id="host" name="host" required>
+                <label for="wildcard">Wildcard (yes/no):</label>
+                <input type="text" id="wildcard" name="wildcard" placeholder="yes/no">
+                <button type="submit">Добавить</button>
+            </div>
+        </form>
+
+        <hr>
+		
+        <!-- Форма для нового ssr -->
+        <form method="POST">
+            <div class="form-section">
+                <h3>Обновление SSR ключа</h3>
+                <input type="hidden" name="command_type" value="ssr_update">
+                <label for="host">Ссылка в формате ss://*****@ip:port</label>
+                <input type="text" id="ssr" name="ssr" required>
+                <button type="submit">Обновить</button>
+            </div>
+        </form>
+
+        <hr>
+
+        <!-- Форма для очистки списка -->
+        <form method="POST">
+            <div class="form-section">
+                <h3>Очистить список разблокировки</h3>
+                <input type="hidden" name="command_type" value="purge">
+                <button type="submit">Очистить</button>
+            </div>
+        </form>
+
+        <hr>
+
+        {% if result %}
+        <div class="result">
+            <h3>Результат:</h3>
+            <pre>{{ result }}</pre>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
