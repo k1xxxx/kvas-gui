@@ -1,0 +1,22 @@
+#!/bin/sh
+START=96
+STOP=10
+case "\$1" in
+    start)
+        echo "Запуск KVAS-GUI..."
+        /opt/bin/python3 /opt/bin/kvas-gui/app.py &
+        ;;
+    stop)
+        echo "Остановка KVAS-GUI..."
+        pkill -f kvas-gui
+        ;;
+    restart)
+        \$0 stop
+        sleep 1
+        \$0 start
+        ;;
+    *)
+        echo "Использование: \$0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
