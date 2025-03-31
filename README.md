@@ -1,5 +1,7 @@
 # kvas-gui
-Мини-интерфейс управления kvas от qzeleza
+Мини-интерфейс управления KVAS от qzeleza
+Работает на Python Flask прямо в entware на роутере.
+Предназначен исключительно для роутеро keenetic в связке с KVAS
 
 ![image](https://github.com/user-attachments/assets/2ac12938-8b4c-438d-b821-585f21394f6b)
 
